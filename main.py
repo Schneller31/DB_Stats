@@ -16,23 +16,23 @@ headers = {
 
 response = requests.get(url, headers=headers)
 
+
 root = ET.fromstring(response.text)
 
+#sorting
+zuege = []
 
-# sorting
 for s in root.findall("s"):
-    for ar in s.findall("ar"):
+    for ar in s.findall("ar"):   # arrivals
         zug = ar.get("l")
         if zug:
-            print("Zug:", zug)
+            zuege.append(zug)
 
-    for dp in s.findall("dp"):
+    for dp in s.findall("dp"):   # departures
         zug = dp.get("l")
         if zug:
-            print("Zug:", zug)
+            zuege.append(zug)
 
-print(response.status_code)
-print(response.text)
-
-#print(api_keys["DB_CLIENT_ID"])
-#print(api_keys["DB_API_KEY"])
+# output
+print("Gefundene Züge:")
+print(zuege)
