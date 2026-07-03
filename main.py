@@ -1,21 +1,21 @@
+import json
 import requests
-from dotenv import load_dotenv
-import os
 
+with open("api.json", "r") as file:
+    api_keys = json.load(file)
+
+headers = {
+    "DB-Client-Id": api_keys["DB_CLIENT_ID"],
+    "DB-Api-Key": api_keys["DB_API_KEY"],
+    "accept": "application/xml"
+}
 
 url = "https://apis.deutschebahn.com/db-api-marketplace/apis/timetables/v1/fchg/8000157"
-
-
-
-load_dotenv(override=True)
-headers = {
-    "DB-Client-Id": os.getenv("DB_CLIENT_ID"),
-    "DB-Api-Key": os.getenv("DB_API_KEY")
-}
 
 response = requests.get(url, headers=headers)
 
 print(response.status_code)
 print(response.text)
 
-print(os.getenv("DB_CLIENT_ID"))
+print(api_keys["DB_CLIENT_ID"])
+print(api_keys["DB_API_KEY"])
