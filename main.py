@@ -13,13 +13,12 @@ headers = {
     "DB-Api-Key": api_keys["DB_API_KEY"],
     "accept": "application/xml"
 }
-
 response = requests.get(url, headers=headers)
-
 
 root = ET.fromstring(response.text)
 
-#sorting
+
+# sorting
 zuege = []
 
 for s in root.findall("s"):
@@ -36,3 +35,5 @@ for s in root.findall("s"):
 # output
 print("Gefundene Züge:")
 print(zuege)
+
+#print(response.text)
