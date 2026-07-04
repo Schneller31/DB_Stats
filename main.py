@@ -21,7 +21,6 @@ root = ET.fromstring(response.text)
 
 bahnhof = "Heilbronn Hbf"
 
-# LIST
 zuege = []
 
 for s in root.findall("s"):
@@ -31,43 +30,52 @@ for s in root.findall("s"):
 
         if zug:
             zuege.append({
+                "typ": "Ankunft",
                 "bahnhof": bahnhof,
                 "zug": zug,
-                "typ": "Ankunft",
                 "geplant": ar.get("pt"),
-                "aktuell": ar.get("ct")
+                "aktuell": ar.get("ct"),
+                "ppth": ar.get("ppth")
             })
+
 
     for dp in s.findall("dp"): # 'dp' bedeutet Abfahrt
         zug = dp.get("l")
 
         if zug:
             zuege.append({
+                "typ": "Abfahrt",
                 "bahnhof": bahnhof,
                 "zug": zug,
-                "typ": "Abfahrt",
                 "geplant": dp.get("pt"),
-                "aktuell": dp.get("ct")
+                "aktuell": dp.get("ct"),
+                "ppth": dp.get("ppth")
             })
 
+
 # OUTPUT
-print("Gefundene Züge:\n")
+print("Typ       | Bahnhof            | Zielbahnhof               | Bahnname | Zeit\n")
 
 for zug in zuege:
 
-    zeit = zug["geplant"] if zug["geplant"] else zug["aktuell"]
+    zeit = zug["geplant"] or zug["aktuell"]
 
-    # Zeit lesbar machen
     if zeit:
         zeit = datetime.strptime(zeit, "%y%m%d%H%M").strftime("%d.%m.%Y %H:%M")
     else:
         zeit = "Keine Zeit"
 
+    if zug["typ"] == "Abfahrt" and zug["ppth"]:
+        ziel = zug["ppth"].split("|")[-1]
+    else:
+        ziel = "-"
+
     print(
         f"{zug['typ']:9} | "
+        f"{zug['bahnhof']:18} | "
+        f"{ziel:25} | "
         f"{zug['zug']:8} | "
-        f"{zeit} | "
-        f"{zug['bahnhof']}"
+        f"{zeit}"
     )
 
-# print(response.text)
+    # print(response.text)
